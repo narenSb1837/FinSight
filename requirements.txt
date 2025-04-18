@@ -5,8 +5,8 @@ llama-index-core>=0.10.0
 llama-index-llms-openai>=0.1.0
 openai>=1.0.0
 python-dotenv>=1.0.0
-asyncio>=3.4.3 
 flask
 flask[async]
 gunicorn
-nest-asyncio
+nest-asyncio>=1.5.6
+Werkzeug>=2.2.2
