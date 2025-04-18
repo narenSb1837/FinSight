@@ -1,0 +1,45 @@
+# Financial Modeling Assumptions
+
+## General Economic Assumptions
+- Inflation Rate: 2.5% per annum
+- Risk-Free Rate: 3.5% per annum
+- Market Risk Premium: 5.5%
+
+## Industry-Specific Assumptions
+- Average Industry Revenue Growth: 8% per annum
+- Average Industry EBITDA Margin: 15%
+- Industry Average P/E Ratio: 18x
+- Industry Average EV/EBITDA: 12x
+
+## Discounted Cash Flow (DCF) Model Parameters
+- Forecast Period: 5 years
+- Terminal Growth Rate Range: 2% to 3%
+- WACC Range: 8% to 12% (adjust based on company leverage and beta)
+
+## Capital Structure Assumptions
+- Target Debt/Equity Ratio: 40%
+- Cost of Debt (Pre-Tax): 4.5%
+- Corporate Tax Rate: 21%
+
+## Operating Assumptions
+- R&D Expense: 5% to 15% of revenue (technology-focused companies)
+- Marketing Expense: 5% to 10% of revenue
+- SG&A Expense: 10% to 20% of revenue
+- CAPEX: 5% to 10% of revenue (adjust based on industry capital intensity)
+- Depreciation: 3% to 5% of fixed assets
+- Working Capital Requirements: 10% to 15% of revenue
+
+## Industry-Specific Growth Drivers
+- Electric Vehicle Adoption Rate: 25% annual growth
+- Autonomous Driving Technology: 35% annual growth
+- Connected Car Services: 20% annual growth
+- Traditional ICE Vehicle Market: 0% to -2% growth
+
+## Risk Factors
+- Regulatory Changes: High impact potential
+- Supply Chain Disruptions: Medium impact potential
+- Consumer Preference Shifts: High impact potential
+- Technology Obsolescence: Medium to high impact potential
+- Competitive Landscape Changes: Medium impact potential
+
+Note: These assumptions should be adjusted based on company-specific factors, market conditions, and industry trends revealed in the financial documents.
