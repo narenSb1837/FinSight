@@ -19,7 +19,7 @@
                     <strong>How it works:</strong> Our system will analyze both documents, extract financial data, generate financial models, and provide a comparative analysis with investment recommendations.
                 </div>
                 
-                <form id="upload-form" action="{{ url_for('upload_files') }}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+                <form id="upload-form" action="{{ url_for('upload_and_analyze') }}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <div class="card h-100">

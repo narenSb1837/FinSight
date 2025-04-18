@@ -9,3 +9,4 @@ asyncio>=3.4.3
 flask
 flask[async]
 gunicorn
+nest-asyncio

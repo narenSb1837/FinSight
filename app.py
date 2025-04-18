@@ -57,11 +57,11 @@ def index():
 
 
 @app.route("/upload", methods=["POST"])
-def upload_files():
+async def upload_and_analyze():
     # Check if both files were submitted
     if "file1" not in request.files or "file2" not in request.files:
         flash("Both files are required", "danger")
-        return redirect(request.url)
+        return redirect(url_for("index"))
 
     file1 = request.files["file1"]
     file2 = request.files["file2"]
@@ -69,93 +69,58 @@ def upload_files():
     # Check if filenames are empty
     if file1.filename == "" or file2.filename == "":
         flash("Both files must be selected", "danger")
-        return redirect(request.url)
+        return redirect(url_for("index"))
 
     # Check if files are allowed types
     if not allowed_file(file1.filename) or not allowed_file(file2.filename):
         flash("Only PDF files are allowed", "danger")
-        return redirect(request.url)
-
-    # Generate unique IDs for temporary files
-    file1_id = str(uuid.uuid4())
-    file2_id = str(uuid.uuid4())
-
-    # Save files to temporary directory
-    file1_path = os.path.join(
-        UPLOAD_FOLDER, f"{file1_id}_{secure_filename(file1.filename)}"
-    )
-    file2_path = os.path.join(
-        UPLOAD_FOLDER, f"{file2_id}_{secure_filename(file2.filename)}"
-    )
-
-    file1.save(file1_path)
-    file2.save(file2_path)
-
-    # Store file paths in session
-    session["file1_path"] = file1_path
-    session["file2_path"] = file2_path
-    session["file1_name"] = file1.filename
-    session["file2_name"] = file2.filename
-
-    # Start the analysis
-    return redirect(url_for("analyze"))
-
-
-@app.route("/analyze")
-async def analyze():
-    file1_path = session.get("file1_path")
-    file2_path = session.get("file2_path")
-    file1_name = session.get("file1_name")
-    file2_name = session.get("file2_name")
-
-    if not file1_path or not file2_path:
-        flash("Please upload files first", "danger")
         return redirect(url_for("index"))
 
-    try:
-        # Create the extraction agent
-        extract_agent = create_extract_agent()
+    # Use a temporary directory that auto-cleans up
+    with tempfile.TemporaryDirectory() as temp_dir:
+        # Save files to the temporary directory
+        file1_path = os.path.join(temp_dir, secure_filename(file1.filename))
+        file2_path = os.path.join(temp_dir, secure_filename(file2.filename))
+        file1.save(file1_path)
+        file2.save(file2_path)
 
-        # Create the workflow with the agent
-        workflow = AutomotiveSectorAnalysisWorkflow(
-            agent=extract_agent,
-            verbose=True,
-            timeout=240,
-        )
-
-        # Run the workflow with the uploaded files
-        result = await workflow.run(
-            deck_path_a=file1_path,
-            deck_path_b=file2_path,
-        )
-
-        # Get the final memo from the result
-        final_memo = result["memo"]
-
-        # Store filenames for display
-        final_memo.company_a_name = file1_name
-        final_memo.company_b_name = file2_name
-
-        # Clean up temporary files
         try:
-            os.remove(file1_path)
-            os.remove(file2_path)
-        except:
-            logger.warning("Failed to delete temporary files")
+            # Create the extraction agent
+            extract_agent = create_extract_agent()
 
-        # Return the results
-        return render_template(
-            "results.html",
-            memo=final_memo,
-            company_a_name=file1_name,
-            company_b_name=file2_name,
-            currency="₹",
-        )
+            # Create the workflow with the agent
+            workflow = AutomotiveSectorAnalysisWorkflow(
+                agent=extract_agent,
+                verbose=True,
+                timeout=240,
+            )
 
-    except Exception as e:
-        logger.exception("Error during analysis")
-        flash(f"Analysis failed: {str(e)}", "danger")
-        return redirect(url_for("index"))
+            # Run the workflow with the uploaded files
+            result = await workflow.run(
+                deck_path_a=file1_path,
+                deck_path_b=file2_path,
+            )
+
+            # Get the final memo from the result
+            final_memo = result["memo"]
+
+            # Store filenames for display
+            final_memo.company_a_name = file1.filename
+            final_memo.company_b_name = file2.filename
+
+            # Render the results
+            return render_template(
+                "results.html",
+                memo=final_memo,
+                company_a_name=file1.filename,
+                company_b_name=file2.filename,
+                currency="₹",
+            )
+
+        except Exception as e:
+            logger.exception("Error during analysis")
+            flash(f"Analysis failed: {str(e)}", "danger")
+            return redirect(url_for("index"))
 
 
 @app.route("/api/status")
